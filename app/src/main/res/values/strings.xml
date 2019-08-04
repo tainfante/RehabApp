@@ -1,0 +1,8 @@
+<resources>
+    <string name="app_name">RehabApp</string>
+    <string name="com">COM</string>
+    <string name="emg">EMG</string>
+    <string name="mov">ACC</string>
+    <string name="history">HIST</string>
+    <string name="log">Log</string>
+</resources>
