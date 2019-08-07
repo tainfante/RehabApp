@@ -14,6 +14,9 @@ class HistFragment : Fragment() {
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View = inflater.inflate(R.layout.hist_layout, container, false)
+    ):View {
+        var view : View = inflater.inflate(R.layout.hist_layout, container, false)
 
+        return view
+    }
 }

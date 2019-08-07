@@ -6,11 +6,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
 import androidx.fragment.app.Fragment
-import android.widget.Toast
-import android.graphics.Bitmap
-import java.text.SimpleDateFormat
-import java.util.*
-
+import android.app.Activity
 
 class ComFragment : Fragment() {
 

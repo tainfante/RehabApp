@@ -7,11 +7,15 @@ import androidx.viewpager.widget.ViewPager
 import com.google.android.material.appbar.AppBarLayout
 import com.google.android.material.tabs.TabLayout
 import android.R.attr.start
+import android.os.Build
 import android.os.SystemClock
 import android.widget.Chronometer
 import android.widget.Toast
-
-
+import androidx.annotation.RequiresApi
+import com.example.rehabapp.ValuesToLoad.Companion.logText
+import java.time.LocalDateTime
+import java.time.format.DateTimeFormatter
+import java.util.*
 
 
 class MainActivity : AppCompatActivity() {
@@ -40,6 +44,13 @@ class MainActivity : AppCompatActivity() {
         }
 
 
+    fun addLog(log: String) {
+        val calendar = Calendar.getInstance()
+        val h = calendar.get(Calendar.HOUR_OF_DAY)
+        val m = calendar.get(Calendar.MINUTE)
+        val result = "$h:$m"
+        logText=("$logText$result $log")
+    }
 
     private fun setupViewPager(viewPager: ViewPager) {
         val adapter = SectionsPageAdapter(super.getSupportFragmentManager())
@@ -51,18 +62,18 @@ class MainActivity : AppCompatActivity() {
         viewPager.adapter = adapter
     }
 
-
     fun startChronometer() {
         if (!running) {
             chronometer.base = SystemClock.elapsedRealtime()
             chronometer.start()
+            addLog("Started measurement\n")
             running = true
         }
     }
     fun stopChronometer() {
         if (running) {
             chronometer.stop()
-            chronometer.base = SystemClock.elapsedRealtime()
+            addLog("Stopped measurement\n")
             running = false
         }
     }
