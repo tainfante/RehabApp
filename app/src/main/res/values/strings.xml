@@ -5,4 +5,5 @@
     <string name="mov">ACC</string>
     <string name="history">HIST</string>
     <string name="log">Log</string>
+    <string name="BT_devices">BT devices</string>
 </resources>
