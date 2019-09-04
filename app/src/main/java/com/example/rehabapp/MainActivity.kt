@@ -30,6 +30,7 @@ class MainActivity : AppCompatActivity(), ComFragment.ComFragmentInterface, Conn
     private lateinit var chronometer: Chronometer
     private var connectedDevice = ConnectDevice(this, this)
     private val queueHandler = QueueHandler()
+    private val saveToFile = SaveToFile(this)
 
 
     private var bluetoothAdapter: BluetoothAdapter? = null
@@ -123,6 +124,8 @@ class MainActivity : AppCompatActivity(), ComFragment.ComFragmentInterface, Conn
     override fun onStartButtonClicked() {
         connectedDevice.macAddress=macaddress
         connectedDevice.execute()
+        saveToFile.createFile("eloelo.txt")
+        saveToFile.saveToFile()
 
     }
 
