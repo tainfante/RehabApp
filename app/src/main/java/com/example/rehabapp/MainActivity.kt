@@ -116,7 +116,7 @@ class MainActivity : AppCompatActivity(), ComFragment.ComFragmentInterface, Conn
 
     override fun onDevicePicked(macaddress: String, deviceName: String) {
         this.macaddress=macaddress
-        Toast.makeText(this, "Selected: "+deviceName+" "+macaddress, Toast.LENGTH_LONG).show()
+        Toast.makeText(this, "Selected: $deviceName $macaddress", Toast.LENGTH_LONG).show()
         isDevicePicked=true
     }
 
