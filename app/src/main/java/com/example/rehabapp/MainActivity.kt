@@ -30,7 +30,7 @@ class MainActivity : AppCompatActivity(), ComFragment.ComFragmentInterface, Conn
     private lateinit var chronometer: Chronometer
     private var connectedDevice = ConnectDevice(this, this)
     private val queueHandler = QueueHandler()
-    private val saveToFile = SaveToFile(this)
+    private val saveToFile = SaveToFile(this, this)
 
 
     private var bluetoothAdapter: BluetoothAdapter? = null
@@ -124,8 +124,16 @@ class MainActivity : AppCompatActivity(), ComFragment.ComFragmentInterface, Conn
     override fun onStartButtonClicked() {
         connectedDevice.macAddress=macaddress
         connectedDevice.execute()
-        saveToFile.createFile("eloelo.txt")
-        saveToFile.saveToFile()
+        val calendar = Calendar.getInstance()
+        val d = calendar.get(Calendar.DAY_OF_MONTH)
+        val mon = calendar.get(Calendar.MONTH)
+        val y = calendar.get(Calendar.YEAR)
+        val h = calendar.get(Calendar.HOUR_OF_DAY)
+        val m = calendar.get(Calendar.MINUTE)
+        val result = "$d:$mon:$y"+ "_"+"$h:$m"
+        saveToFile.createFile(result)
+        saveToFile.saveEmgToFile()
+        saveToFile.saveAccToFile()
 
     }
 
