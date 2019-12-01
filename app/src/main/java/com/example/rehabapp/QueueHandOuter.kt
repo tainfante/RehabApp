@@ -6,5 +6,9 @@ interface QueueHandOuter {
 
     fun giveMeTheAccQueue(): LinkedBlockingQueue<AccFrame>
     fun giveMeTheEmgQueue(): LinkedBlockingQueue<EmgFrame>
+    fun giveMeTheAccQueuetoPlot(): LinkedBlockingQueue<AccFrame>
+    fun giveMeTheEmgQueuetoPlot(): LinkedBlockingQueue<EmgFrame>
+    fun ifEnable(): Boolean
+    fun setEnable(enable:Boolean)
 
 }

@@ -50,12 +50,12 @@ class ConnectDevice(isReady: IsReadyForTransmition, queueHandOuter: QueueHandOut
     override fun onPostExecute(result: String?) {
         super.onPostExecute(result)
         if (!connectSuccess) {
-            connectResult = "Error in connection"
+            connectResult = "Error in connection\n"
             isReady?.isDeviceReady(false)
 
         } else {
             isConnected = true
-            connectResult = "Successfully connected"
+            connectResult = "Successfully connected\n"
             isReady?.isDeviceReady(true)
         }
     }
@@ -99,10 +99,12 @@ class ConnectDevice(isReady: IsReadyForTransmition, queueHandOuter: QueueHandOut
                                 if(emg==1&&acc==0){
                                     val frame = decodeEmgFrame(readEmgBuffer.copyOfRange(0, readBufferPosition))
                                     queueHandOuter!!.giveMeTheEmgQueue().add(frame)
+                                    queueHandOuter!!.giveMeTheEmgQueuetoPlot().add(frame)
                                     emg=0
                                 } else if(emg==0&&acc==1){
                                     val frame = decodeAccFrame(readAccBuffer.copyOfRange(0, readBufferPosition))
                                     queueHandOuter!!.giveMeTheAccQueue().add(frame)
+                                    if(queueHandOuter!!.ifEnable())queueHandOuter!!.giveMeTheAccQueuetoPlot().add(frame)
                                     acc = 0
                                 }
                                 readBufferPosition=0

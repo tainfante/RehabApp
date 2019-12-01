@@ -27,12 +27,12 @@ class SaveToFile(val context: Context, queueHandOuter: QueueHandOuter) {
     fun saveAccToFile(){
 
         var accFrame: AccFrame
-        var accx: Float
-        var accy:Float
-        var accz: Float
-        var gyrx: Float
-        var gyry: Float
-        var gyrz: Float
+        var accx: Int
+        var accy: Int
+        var accz: Int
+        var gyrx: Int
+        var gyry: Int
+        var gyrz: Int
 
         val saveAccDataThread = Thread(Runnable {
             while (true) {
@@ -48,9 +48,7 @@ class SaveToFile(val context: Context, queueHandOuter: QueueHandOuter) {
                     accfile?.appendText("$accx $accy $accz $gyrx $gyry $gyrz\n\r")
 
                 } catch (ex: IOException) {
-
                 }
-
             }
         })
         saveAccDataThread.start()
@@ -58,8 +56,8 @@ class SaveToFile(val context: Context, queueHandOuter: QueueHandOuter) {
     }
     fun saveEmgToFile(){
 
-        var rawEmg: Float
-        var filtredEmg: Float
+        var rawEmg: Int
+        var filtredEmg: Int
         var emgFrame: EmgFrame
 
         val saveEmgDataThread = Thread(Runnable {
@@ -71,9 +69,7 @@ class SaveToFile(val context: Context, queueHandOuter: QueueHandOuter) {
                     emgfile?.appendText("$rawEmg $filtredEmg\n\r")
 
                 } catch (ex: IOException) {
-
                 }
-
             }
         })
         saveEmgDataThread.start()

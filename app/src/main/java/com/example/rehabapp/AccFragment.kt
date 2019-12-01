@@ -1,101 +1,103 @@
 package com.example.rehabapp
 
+import android.graphics.Color
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
+import com.androidplot.Plot
+import java.util.*
+import android.graphics.Paint.Join
+import com.androidplot.xy.*
+import java.text.DecimalFormat
 
-import com.example.rehabapp.ValuesToLoad.Companion.accXEntries
-import com.example.rehabapp.ValuesToLoad.Companion.accYEntries
-import com.example.rehabapp.ValuesToLoad.Companion.accZEntries
+class AccFragment(private val queueHandOuter: QueueHandOuter) : Fragment() {
 
-import com.example.rehabapp.ValuesToLoad.Companion.gyrXEntries
-import com.example.rehabapp.ValuesToLoad.Companion.gyrYEntries
-import com.example.rehabapp.ValuesToLoad.Companion.gyrZEntries
-import com.github.mikephil.charting.charts.LineChart
-import com.github.mikephil.charting.data.Entry
-import com.github.mikephil.charting.data.LineData
-import com.github.mikephil.charting.data.LineDataSet
-import com.github.mikephil.charting.interfaces.datasets.ILineDataSet
+    lateinit var accChart: XYPlot
+    lateinit var gyrChart: XYPlot
+    lateinit var data: RealTimeXYDatasource
+    lateinit var myThread: Thread
 
-
-class AccFragment : Fragment() {
-
-    lateinit var accChart: LineChart
-    lateinit var gyrChart: LineChart
 
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        var view: View =inflater.inflate(R.layout.acc_layout, container, false)
-
-        var color1 = ContextCompat.getColor((activity as MainActivity).applicationContext, R.color.colorblue)
-        var color2 = ContextCompat.getColor((activity as MainActivity).applicationContext, R.color.colorpink)
-        var color3 = ContextCompat.getColor((activity as MainActivity).applicationContext, R.color.colorgreen)
+        val view: View =inflater.inflate(R.layout.acc_layout, container, false)
 
         accChart=view.findViewById(R.id.accChart)
-
-        val accXDataSet=LineDataSet(accXEntries, "X")
-        accXDataSet.lineWidth = 0.4f
-        accXDataSet.setDrawCircles(false)
-        accXDataSet.color = color1
-
-        val accYDataSet=LineDataSet(accYEntries, "Y")
-        accYDataSet.lineWidth = 0.4f
-        accYDataSet.setDrawCircles(false)
-        accYDataSet.color = color2
-
-        val accZDataSet=LineDataSet(accZEntries, "Z")
-        accZDataSet.lineWidth = 0.4f
-        accZDataSet.setDrawCircles(false)
-        accZDataSet.color = color3
-
-        var accDataSets = ArrayList<ILineDataSet>()
-        accDataSets.add(accXDataSet)
-        accDataSets.add(accYDataSet)
-        accDataSets.add(accZDataSet)
-
-        val accLineData= LineData(accDataSets)
-        accChart.data = accLineData
-        accChart.axisLeft.axisMinimum = 0.0F
-        accChart.axisLeft.axisMaximum = 65535.0F
-        accChart.axisRight.isEnabled = false
-        accChart.invalidate()
-
         gyrChart=view.findViewById(R.id.gyrChart)
 
-        val gyrXDataSet=LineDataSet(gyrXEntries, "X")
-        gyrXDataSet.lineWidth = 0.4f
-        gyrXDataSet.setDrawCircles(false)
-        gyrXDataSet.color = color1
+        val plotUpdater=MyPlotUpdater(accChart, gyrChart)
+        accChart.graph.getLineLabelStyle(XYGraphWidget.Edge.BOTTOM).format = DecimalFormat("0")
+        accChart.domainStepMode = StepMode.INCREMENT_BY_VAL
+        accChart.domainStepValue = 400.0
+        accChart.rangeStepMode = StepMode.INCREMENT_BY_VAL
+        accChart.rangeStepValue = 10000.0
+        accChart.graph.getLineLabelStyle(XYGraphWidget.Edge.LEFT).format = DecimalFormat("0")
 
-        val gyrYDataSet=LineDataSet(gyrYEntries, "Y")
-        gyrYDataSet.lineWidth = 0.4f
-        gyrYDataSet.setDrawCircles(false)
-        gyrYDataSet.color = color2
+        gyrChart.graph.getLineLabelStyle(XYGraphWidget.Edge.BOTTOM).format = DecimalFormat("0")
+        gyrChart.domainStepMode = StepMode.INCREMENT_BY_VAL
+        gyrChart.domainStepValue = 400.0
+        gyrChart.rangeStepMode = StepMode.INCREMENT_BY_VAL
+        gyrChart.rangeStepValue = 10000.0
+        gyrChart.graph.getLineLabelStyle(XYGraphWidget.Edge.LEFT).format = DecimalFormat("0")
 
-        val gyrZDataSet=LineDataSet(gyrZEntries, "Z")
-        gyrZDataSet.lineWidth = 0.4f
-        gyrZDataSet.setDrawCircles(false)
-        gyrZDataSet.color=color3
+        accChart.setRangeBoundaries(0,65536, BoundaryMode.FIXED)
+        gyrChart.setRangeBoundaries(0,65536, BoundaryMode.FIXED)
 
-        var gyrDataSets = ArrayList<ILineDataSet>()
-        gyrDataSets.add(gyrXDataSet)
-        gyrDataSets.add(gyrYDataSet)
-        gyrDataSets.add(gyrZDataSet)
+        data = RealTimeXYDatasource(this.queueHandOuter)
 
-        val gyrLineData= LineData(gyrDataSets)
-        gyrChart.data = gyrLineData
-        gyrChart.axisLeft.axisMinimum = 0.0F
-        gyrChart.axisLeft.axisMaximum = 65535.0F
-        gyrChart.axisRight.isEnabled = false
-        gyrChart.invalidate()
+        val accXseries = RealTimeSeries(data, 0, "ACC X")
+        val accYseries = RealTimeSeries(data, 1, "ACC Y")
+        val accZseries = RealTimeSeries(data, 2, "ACC Z")
+
+        val gyrXseries = RealTimeSeries(data, 3, "GYR X")
+        val gyrYseries = RealTimeSeries(data, 4, "GYR Y")
+        val gyrZseries = RealTimeSeries(data, 5, "GYR Z")
+
+        val formatter1 = LineAndPointFormatter(Color.rgb(0, 200, 0), null, null, null)
+        formatter1.linePaint.strokeJoin = Join.ROUND
+        formatter1.linePaint.strokeWidth = 10f
+        accChart.addSeries(accXseries,formatter1)
+        gyrChart.addSeries(gyrXseries, formatter1)
+
+        val formatter2 = LineAndPointFormatter(Color.rgb(0, 0, 200), null, null, null)
+        formatter1.linePaint.strokeJoin = Join.ROUND
+        formatter1.linePaint.strokeWidth = 10f
+        accChart.addSeries(accYseries,formatter2)
+        gyrChart.addSeries(gyrYseries, formatter2)
+
+        val formatter3 = LineAndPointFormatter(Color.rgb(200, 0, 0), null, null, null)
+        formatter1.linePaint.strokeJoin = Join.ROUND
+        formatter1.linePaint.strokeWidth = 10f
+        accChart.addSeries(accZseries,formatter3)
+        gyrChart.addSeries(gyrZseries, formatter3)
+
+        data.addObserver(plotUpdater)
 
         return view
     }
 
+    override fun onResume() {
+        myThread = Thread(data)
+        myThread.start()
+        super.onResume()
+    }
+
+    override fun onPause() {
+        data.stopThread()
+        super.onPause()
+    }
+
+    inner class MyPlotUpdater(private var accplot: Plot<*, *, *, *, *>, private var gyrplot: Plot<*, *, *, *, *> ) : Observer {
+
+        override fun update(o: Observable?, arg: Any?) {
+            accplot.redraw()
+            gyrplot.redraw()
+        }
+
+    }
 }

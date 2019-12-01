@@ -1,21 +1,30 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-                android:orientation="vertical"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent">
+              xmlns:ap="http://schemas.android.com/apk/res-auto"
+              android:orientation="vertical"
+              android:layout_width="match_parent"
+              android:layout_height="match_parent">
 
-    <com.github.mikephil.charting.charts.LineChart
+    <com.androidplot.xy.XYPlot
             android:id="@+id/accChart"
+            style="@style/APDefacto.Dark"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_weight="1"
-            android:layout_gravity="top"/>
+            android:layout_gravity="top"
+            ap:title="Accelerometer data"
+            ap:lineLabels="left|bottom"
+            ap:lineLabelRotationBottom="-45"/>
 
-    <com.github.mikephil.charting.charts.LineChart
+    <com.androidplot.xy.XYPlot
             android:id="@+id/gyrChart"
+            style="@style/APDefacto.Dark"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_weight="1"
-            android:layout_gravity="bottom"/>
+            android:layout_gravity="bottom"
+            ap:title="Gyroscope data"
+            ap:lineLabels="left|bottom"
+            ap:lineLabelRotationBottom="-45"/>
 
 </LinearLayout>

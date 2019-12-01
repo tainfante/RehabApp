@@ -20,7 +20,6 @@ import kotlin.collections.ArrayList
 @ExperimentalUnsignedTypes
 class MainActivity : AppCompatActivity(), ComFragment.ComFragmentInterface, ConnectDevice.IsReadyForTransmition, QueueHandOuter {
 
-
     lateinit var sectionsPageAdapter: SectionsPageAdapter
     lateinit var viewPager: ViewPager
     lateinit var tabLayout: TabLayout
@@ -78,7 +77,7 @@ class MainActivity : AppCompatActivity(), ComFragment.ComFragmentInterface, Conn
         adapter.addFragment(ComFragment(), "COM")
         adapter.addFragment(HistFragment(), "HIST")
         adapter.addFragment(EmgFragment(), "EMG")
-        adapter.addFragment(AccFragment(), "ACC")
+        adapter.addFragment(AccFragment(this), "ACC")
         adapter.addFragment(LogFragment(), "LOG")
         viewPager.adapter = adapter
     }
@@ -126,7 +125,7 @@ class MainActivity : AppCompatActivity(), ComFragment.ComFragmentInterface, Conn
         connectedDevice.execute()
         val calendar = Calendar.getInstance()
         val d = calendar.get(Calendar.DAY_OF_MONTH)
-        val mon = calendar.get(Calendar.MONTH)
+        val mon = calendar.get(Calendar.MONTH)+1
         val y = calendar.get(Calendar.YEAR)
         val h = calendar.get(Calendar.HOUR_OF_DAY)
         val m = calendar.get(Calendar.MINUTE)
@@ -172,5 +171,21 @@ class MainActivity : AppCompatActivity(), ComFragment.ComFragmentInterface, Conn
 
     override fun giveMeTheEmgQueue(): LinkedBlockingQueue<EmgFrame> {
         return queueHandler.getEmgQueue()
+    }
+
+    override fun giveMeTheAccQueuetoPlot(): LinkedBlockingQueue<AccFrame> {
+        return queueHandler.getAccQueuetoPlot()
+    }
+
+    override fun giveMeTheEmgQueuetoPlot(): LinkedBlockingQueue<EmgFrame> {
+        return queueHandler.getEmgQueuetoPlot()
+    }
+
+    override fun ifEnable(): Boolean {
+        return queueHandler.ifEnable()
+    }
+
+    override fun setEnable(enable: Boolean) {
+        queueHandler.setEnable(enable)
     }
 }
