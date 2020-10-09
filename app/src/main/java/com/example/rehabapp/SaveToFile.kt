@@ -54,6 +54,7 @@ class SaveToFile(val context: Context, queueHandOuter: QueueHandOuter) {
         saveAccDataThread.start()
 
     }
+    // ELO ELO
     fun saveEmgToFile(){
 
         var rawEmg: Short
