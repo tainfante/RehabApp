@@ -75,8 +75,7 @@ class MainActivity : AppCompatActivity(), ComFragment.ComFragmentInterface, Conn
     private fun setupViewPager(viewPager: ViewPager) {
         val adapter = SectionsPageAdapter(super.getSupportFragmentManager())
         adapter.addFragment(ComFragment(), "COM")
-        adapter.addFragment(HistFragment(), "HIST")
-        adapter.addFragment(EmgFragment(), "EMG")
+        adapter.addFragment(EmgFragment(this), "EMG")
         adapter.addFragment(AccFragment(this), "ACC")
         adapter.addFragment(LogFragment(), "LOG")
         viewPager.adapter = adapter
@@ -181,11 +180,14 @@ class MainActivity : AppCompatActivity(), ComFragment.ComFragmentInterface, Conn
         return queueHandler.getEmgQueuetoPlot()
     }
 
-    override fun ifEnable(): Boolean {
-        return queueHandler.ifEnable()
+    override fun ifEmgEnable(): Boolean {
+        return queueHandler.ifEmgEnable()
     }
 
-    override fun setEnable(enable: Boolean) {
-        queueHandler.setEnable(enable)
+    override fun setEnable(enable: Boolean, type: Int) {
+        queueHandler.setEnable(enable, type)
+    }
+    override fun ifAccEnable(): Boolean {
+        return queueHandler.ifAccEnable()
     }
 }

@@ -56,8 +56,8 @@ class SaveToFile(val context: Context, queueHandOuter: QueueHandOuter) {
     }
     fun saveEmgToFile(){
 
-        var rawEmg: Int
-        var filtredEmg: Int
+        var rawEmg: Short
+        var filtredEmg: Short
         var emgFrame: EmgFrame
 
         val saveEmgDataThread = Thread(Runnable {

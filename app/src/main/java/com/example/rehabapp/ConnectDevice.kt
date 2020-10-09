@@ -99,12 +99,12 @@ class ConnectDevice(isReady: IsReadyForTransmition, queueHandOuter: QueueHandOut
                                 if(emg==1&&acc==0){
                                     val frame = decodeEmgFrame(readEmgBuffer.copyOfRange(0, readBufferPosition))
                                     queueHandOuter!!.giveMeTheEmgQueue().add(frame)
-                                    queueHandOuter!!.giveMeTheEmgQueuetoPlot().add(frame)
+                                    if(queueHandOuter!!.ifEmgEnable())queueHandOuter!!.giveMeTheEmgQueuetoPlot().add(frame)
                                     emg=0
                                 } else if(emg==0&&acc==1){
                                     val frame = decodeAccFrame(readAccBuffer.copyOfRange(0, readBufferPosition))
                                     queueHandOuter!!.giveMeTheAccQueue().add(frame)
-                                    if(queueHandOuter!!.ifEnable())queueHandOuter!!.giveMeTheAccQueuetoPlot().add(frame)
+                                    if(queueHandOuter!!.ifAccEnable())queueHandOuter!!.giveMeTheAccQueuetoPlot().add(frame)
                                     acc = 0
                                 }
                                 readBufferPosition=0
@@ -140,6 +140,7 @@ class ConnectDevice(isReady: IsReadyForTransmition, queueHandOuter: QueueHandOut
                     data[i]= data[i].inv()
                     encodedData[number]=data[i]
                     number++
+                    change=0
                 }
                 else -> {
                     encodedData[number]=data[i]
@@ -162,6 +163,7 @@ class ConnectDevice(isReady: IsReadyForTransmition, queueHandOuter: QueueHandOut
                     data[i]= data[i].inv()
                     encodedData[number]=data[i]
                     number++
+                    change=0
                 }
                 else -> {
                     encodedData[number]=data[i]

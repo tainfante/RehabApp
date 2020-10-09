@@ -27,6 +27,8 @@ class AccFragment(private val queueHandOuter: QueueHandOuter) : Fragment() {
     ): View {
         val view: View =inflater.inflate(R.layout.acc_layout, container, false)
 
+        println("Accfragment oncreateview")
+
         accChart=view.findViewById(R.id.accChart)
         gyrChart=view.findViewById(R.id.gyrChart)
 
@@ -45,10 +47,10 @@ class AccFragment(private val queueHandOuter: QueueHandOuter) : Fragment() {
         gyrChart.rangeStepValue = 10000.0
         gyrChart.graph.getLineLabelStyle(XYGraphWidget.Edge.LEFT).format = DecimalFormat("0")
 
-        accChart.setRangeBoundaries(0,65536, BoundaryMode.FIXED)
-        gyrChart.setRangeBoundaries(0,65536, BoundaryMode.FIXED)
+        accChart.setRangeBoundaries(-32768,32768, BoundaryMode.FIXED)
+        gyrChart.setRangeBoundaries(-32768,32768, BoundaryMode.FIXED)
 
-        data = RealTimeXYDatasource(this.queueHandOuter)
+        data = RealTimeXYDatasource(this.queueHandOuter,1)
 
         val accXseries = RealTimeSeries(data, 0, "ACC X")
         val accYseries = RealTimeSeries(data, 1, "ACC Y")
@@ -60,19 +62,19 @@ class AccFragment(private val queueHandOuter: QueueHandOuter) : Fragment() {
 
         val formatter1 = LineAndPointFormatter(Color.rgb(0, 200, 0), null, null, null)
         formatter1.linePaint.strokeJoin = Join.ROUND
-        formatter1.linePaint.strokeWidth = 10f
+        formatter1.linePaint.strokeWidth = 2f
         accChart.addSeries(accXseries,formatter1)
         gyrChart.addSeries(gyrXseries, formatter1)
 
         val formatter2 = LineAndPointFormatter(Color.rgb(0, 0, 200), null, null, null)
-        formatter1.linePaint.strokeJoin = Join.ROUND
-        formatter1.linePaint.strokeWidth = 10f
+        formatter2.linePaint.strokeJoin = Join.ROUND
+        formatter2.linePaint.strokeWidth = 2f
         accChart.addSeries(accYseries,formatter2)
         gyrChart.addSeries(gyrYseries, formatter2)
 
         val formatter3 = LineAndPointFormatter(Color.rgb(200, 0, 0), null, null, null)
-        formatter1.linePaint.strokeJoin = Join.ROUND
-        formatter1.linePaint.strokeWidth = 10f
+        formatter3.linePaint.strokeJoin = Join.ROUND
+        formatter3.linePaint.strokeWidth = 2f
         accChart.addSeries(accZseries,formatter3)
         gyrChart.addSeries(gyrZseries, formatter3)
 
@@ -81,10 +83,21 @@ class AccFragment(private val queueHandOuter: QueueHandOuter) : Fragment() {
         return view
     }
 
+    override fun setUserVisibleHint(isVisibleToUser: Boolean) {
+        super.setUserVisibleHint(isVisibleToUser)
+        if(isVisibleToUser&&isResumed){
+            onResume()
+        } else if(!isVisibleToUser&&isResumed){
+            onPause()
+        }
+    }
+
     override fun onResume() {
+        super.onResume()
+        if((!userVisibleHint)) return
         myThread = Thread(data)
         myThread.start()
-        super.onResume()
+
     }
 
     override fun onPause() {

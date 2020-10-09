@@ -8,7 +8,8 @@ class QueueHandler {
     private var emgQueue: LinkedBlockingQueue<EmgFrame> = LinkedBlockingQueue()
     private var accQueuetoPlot: LinkedBlockingQueue<AccFrame> = LinkedBlockingQueue()
     private var emgQueuetoPlot: LinkedBlockingQueue<EmgFrame> = LinkedBlockingQueue()
-    private var enable=false
+    private var accEnable=false
+    private var emgEnable=false
 
     fun getAccQueue():LinkedBlockingQueue<AccFrame>{
         return accQueue
@@ -25,13 +26,14 @@ class QueueHandler {
     fun getEmgQueuetoPlot(): LinkedBlockingQueue<EmgFrame>{
         return emgQueuetoPlot
     }
-    fun ifEnable():Boolean{
-        return enable
+    fun ifEmgEnable():Boolean{
+        return emgEnable
     }
-    fun setEnable(enable:Boolean){
-        this.enable=enable
+    fun setEnable(enable: Boolean, type:Int){
+        if(type==0)this.emgEnable=enable
+        else this.accEnable=enable
     }
-
-
-
+    fun ifAccEnable():Boolean{
+        return accEnable
+    }
 }

@@ -12,9 +12,7 @@
                 android:layout_height="match_parent"
                 android:layout_weight="1"
                 android:layout_gravity="top"
-                ap:title="A Simple XY Plot"
-                ap:rangeTitle="range"
-                ap:domainTitle="domain"
+                ap:title="Electromyography"
                 ap:lineLabels="left|bottom"
                 ap:lineLabelRotationBottom="-45"/>
 
